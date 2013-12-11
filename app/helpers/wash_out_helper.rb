@@ -5,7 +5,18 @@ module WashOutHelper
     when 'rpc'
       { :"xsi:type" => param.namespaced_type }
     when 'document'
-      { }
+      attributes = { }
+      if param.struct?
+        if !param.multiplied
+          param.map.each do |p|
+            if p.name[0] == 'x'
+              attributes[p.name.gsub('x','')] = p.value
+              param.map.delete(p)
+            end  
+          end
+        end
+      end
+      attributes
     end
   end
 
