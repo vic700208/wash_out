@@ -48,7 +48,9 @@ module WashOut
           self.soap_actions[exposed_name] = options.merge(
             in:           WashOut::Param.parse_def(soap_config, options[:args]),
             out:          WashOut::Param.parse_def(soap_config, options[:return]),
-            to:           options[:to] || action.to_s
+            to:           options[:to] || action.to_s,
+            response_tag: options[:response_tag],
+            response_attr: options[:response_attr]
           )
         end
       end
