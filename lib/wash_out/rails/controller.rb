@@ -49,8 +49,7 @@ module WashOut
             in:           WashOut::Param.parse_def(soap_config, options[:args]),
             out:          WashOut::Param.parse_def(soap_config, options[:return]),
             to:           options[:to] || action.to_s,
-            response_tag: options[:response_tag],
-            response_attr: options[:response_attr]
+            response_tag: options[:response_tag]
           )
         end
       end
