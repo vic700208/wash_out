@@ -183,7 +183,8 @@ module WashOut
 
         render :template => "wash_out/#{soap_config.wsdl_style}/response",
                :layout => false,
-               :locals => { :result => inject.call(result, @action_spec[:out]) },
+               :locals => { :result => inject.call(result, @action_spec[:out]),
+                            :tag_attributes => options[:tag_attributes] },
                :content_type => 'text/xml'
       end
 
