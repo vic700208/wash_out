@@ -3,20 +3,21 @@ module WashOut
 
     attr_reader :soap_config
 
-    def self.authenticate(soap_config, token)
-      wsse = self.new(soap_config, token)
+    def self.authenticate(soap_config, token, auth_proc=nil)
+      wsse = self.new(soap_config, token, auth_proc)
 
       unless wsse.eligible?
         raise WashOut::SOAPError, "Unauthorized"
       end
     end
 
-    def initialize(soap_config, token)
+    def initialize(soap_config, token, auth_proc=nil)
       @soap_config = soap_config
       if token.blank? && required?
         raise WashOut::SOAPError, "Missing required UsernameToken"
       end
       @username_token = token
+      @auth_proc = auth_proc
     end
 
     def required?
@@ -62,10 +63,12 @@ module WashOut
     end
 
     def eligible?
-      return true unless required?
-
       user     = @username_token.values_at(:username, :Username).compact.first
       password = @username_token.values_at(:password, :Password).compact.first
+
+      return @auth_proc.call(user, password) if @auth_proc
+
+      return true unless required?
 
       if (expected_user == user && expected_password == password)
         return true
