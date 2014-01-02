@@ -64,7 +64,7 @@ module WashOut
                :content_type => 'text/xml'
       end
 
-      def _authenticate_wsse
+      def _authenticate_wsse(auth_proc=nil)
         begin
           xml_security   = env['wash_out.soap_data'].values_at(:envelope, :Envelope).compact.first
           xml_security   = xml_security.values_at(:header, :Header).compact.first
@@ -74,7 +74,7 @@ module WashOut
           username_token = nil
         end
 
-        WashOut::Wsse.authenticate(soap_config, username_token)
+        WashOut::Wsse.authenticate(soap_config, username_token, auth_proc)
 
         request.env['WSSE_TOKEN'] = username_token.with_indifferent_access unless username_token.blank?
       end
