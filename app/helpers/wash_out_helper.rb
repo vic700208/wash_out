@@ -1,5 +1,23 @@
 module WashOutHelper
 
+  def wsdl_multi_data_options(param)
+    case controller.soap_config.wsdl_style
+    when 'rpc'
+      { :"xsi:type" => param.namespaced_type }
+    when 'document'
+      value = nil
+      attributes = { }
+      param.map.each do |p|
+        if p.name[0] == 'x'
+          attributes[p.name.gsub('x','')] = p.value
+        elsif p.name == 'val'
+          value = p.value
+        end
+      end
+      return value, attributes
+    end
+  end
+
   def wsdl_data_options(param)
     case controller.soap_config.wsdl_style
     when 'rpc'
@@ -36,13 +54,20 @@ module WashOutHelper
         end
       else
         if !param.multiplied
-          xml.tag! tag_name,  param_options do
-            wsdl_data(xml, param.map)
+          if param.map.count > 0
+            xml.tag! tag_name, param_options do
+              wsdl_data(xml, param.map)
+            end
           end
         else
           param.map.each do |p|
-            xml.tag! tag_name, param_options do
-              wsdl_data(xml, p.map)
+            v, param_options = wsdl_multi_data_options(p)
+            if v 
+              xml.tag! tag_name, v, param_options
+            else
+              xml.tag! tag_name, param_options do
+                wsdl_data(xml, p.map)
+              end
             end
           end
         end
