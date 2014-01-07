@@ -63,12 +63,12 @@ module WashOut
     end
 
     def eligible?
+      return true unless required?
+
       user     = @username_token.values_at(:username, :Username).compact.first
       password = @username_token.values_at(:password, :Password).compact.first
 
       return @auth_proc.call(user, password) if @auth_proc
-
-      return true unless required?
 
       if (expected_user == user && expected_password == password)
         return true
