@@ -86,7 +86,7 @@ module WashOut
         xml_data = env['wash_out.soap_data'].values_at(:envelope, :Envelope).compact.first
         xml_data = xml_data.values_at(:body, :Body).compact.first
         xml_data = xml_data.values_at(soap_action.underscore.to_sym,
-                                      soap_action.to_sym).compact.first || {}
+                                      soap_action.to_sym).compact.first || xml_data
 
         strip_empty_nodes = lambda{|hash|
           hash.keys.each do |key|
