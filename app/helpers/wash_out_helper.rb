@@ -8,8 +8,8 @@ module WashOutHelper
       value = nil
       attributes = { }
       param.map.each do |p|
-        if p.name[0] == 'x'
-          attributes[p.name.gsub('x','')] = p.value
+        if p.name[0] == '@'
+          attributes[p.name.gsub('@','')] = p.value
         elsif p.name == 'val'
           value = p.value
         end
@@ -27,8 +27,8 @@ module WashOutHelper
       if param.struct?
         if !param.multiplied
           param.map.each do |p|
-            if p.name[0] == 'x'
-              attributes[p.name.gsub('x','')] = p.value
+            if p.name[0] == '@'
+              attributes[p.name.gsub('@','')] = p.value
               param.map.delete(p)
             end  
           end
@@ -84,7 +84,7 @@ module WashOutHelper
           xml.tag! "xsd:sequence" do
             param.map.each do |value|
               more << value if value.struct?
-              xml.tag! "xsd:element", wsdl_occurence(value, false, :name => value.name, :type => value.namespaced_type)
+              xml.tag! "xsd:element", wsdl_occurence(value, false, :name => value.name, :type => value.namespaced_type) if value.name[0] != '@'
             end
           end
         end
