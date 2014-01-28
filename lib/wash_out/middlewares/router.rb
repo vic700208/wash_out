@@ -37,6 +37,7 @@ module WashOut
           soap_action.gsub!(/^(#{namespace}(\/|#)?)?([^"]*)$/, '\3')
         end
 
+        soap_action.gsub!(/(.*\/)(.*)$/,'\2')
         env['wash_out.soap_action'] = soap_action
       end
 
